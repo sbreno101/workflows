@@ -1,0 +1,33 @@
+name: Update GitHub Stats
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install GitHub Stats
+        run: npm install -g github-stats-card
+
+      - name: Generate Stats Image
+        run: github-stats-card --username sbreno101 --private
+
+      - name: Update README
+        run: |
+          echo "\`\`\`yaml" > README.md
+          github-stats-card --username sbreno101 --private >> README.md
+          echo "\`\`\`" >> README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
